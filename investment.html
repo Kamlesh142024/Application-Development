@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input, select, button {
+            margin: 10px;
+            padding: 5px;
+        }
+        #investment {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div id="investment">
+        <h2>Investment Planner</h2>
+        <label for="initialInvestment">Initial Lump Sum to be Invested (£):</label>
+        <input type="number" id="initialInvestment" placeholder="Enter initial lump sum" />
+
+        <label for="monthlyInvestment">Monthly Amount to be Invested (£):</label>
+        <input type="number" id="monthlyInvestment" placeholder="Enter monthly amount" />
+
+        <label for="investmentType">Type of Investment:</label>
+        <select id="investmentType">
+            <option value="1">Basic Savings Plan</option>
+            <option value="2">Savings Plan Plus</option>
+            <option value="3">Managed Stock Investments</option>
+        </select>
+
+        <button onclick="calculateInvestment()">Get Investment Quote</button>
+
+        <h3 id="investmentResult"></h3>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <script>
+        function calculateInvestment() {
+            const initialInvestment = parseFloat(document.getElementById('initialInvestment').value);
+            const monthlyInvestment = parseFloat(document.getElementById('monthlyInvestment').value);
+            const investmentType = parseInt(document.getElementById('investmentType').value);
+
+            let maxReturns = 0;
+            let minReturns = 0;
+            let totalProfit1Year = 0;
+            let totalProfit5Years = 0;
+            let totalProfit10Years = 0;
+            let totalFees1Year = 0;
+            let totalFees5Years = 0;
+            let totalFees10Years = 0;
+            let totalTaxes1Year = 0;
+            let totalTaxes5Years = 0;
+            let totalTaxes10Years = 0;
+
+            switch (investmentType) {
+                case 1:
+                    maxReturns = initialInvestment * (1 + 0.02496);
+                    minReturns = initialInvestment * (1 + 0.012);
+                    totalFees1Year = monthlyInvestment * 12 * 0.0025;
+                    break;
+                case 2:
+                    maxReturns = initialInvestment * (1 + 0.05596);
+                    minReturns = initialInvestment * (1 + 0.03);
+                    totalFees1Year = monthlyInvestment * 12 * 0.003;
+                    totalTaxes1Year = Math.max(0, (maxReturns - 12000) * 0.1);
+                    break;
+                case 3:
+                    maxReturns = initialInvestment * (1 + 0.23);
+                    minReturns = initialInvestment * (1 + 0.04);
+                    totalFees1Year = monthlyInvestment * 12 * 0.013;
+                    totalTaxes1Year = Math.max(0, (maxReturns - 12000) * 0.1) + Math.max(0, (maxReturns - 40000) * 0.2);
+                    break;
+            }
+
+            totalProfit1Year = maxReturns - initialInvestment - totalFees1Year - totalTaxes1Year;
+            totalProfit5Years = maxReturns - initialInvestment - totalFees1Year * 5 - totalTaxes1Year * 5;
+            totalProfit10Years = maxReturns - initialInvestment - totalFees1Year * 10 - totalTaxes1Year * 10;
+
+            const formattedCurrency = (value) => value.toLocaleString('en-GB', { style: 'currency', currency: 'GBP' });
+
+            const resultMessage = `
+                1 Year Projection:
+                - Maximum Returns: ${formattedCurrency(maxReturns)}
+                - Minimum Returns: ${formattedCurrency(minReturns)}
+                - Total Profit: ${formattedCurrency(totalProfit1Year)}
+                - Total Fees Paid: ${formattedCurrency(totalFees1Year)}
+                - Total Taxes Paid: ${formattedCurrency(totalTaxes1Year)}
+
+                5 Years Projection:
+                - Maximum Returns: ${formattedCurrency(maxReturns)}
+                - Total Profit: ${formattedCurrency(totalProfit5Years)}
+                - Total Fees Paid: ${formattedCurrency(totalFees1Year * 5)}
+                - Total Taxes Paid: ${formattedCurrency(totalTaxes1Year * 5)}
+
+                10 Years Projection:
+                - Maximum Returns: ${formattedCurrency(maxReturns)}
+                - Total Profit: ${formattedCurrency(totalProfit10Years)}
+                - Total Fees Paid: ${formattedCurrency(totalFees1Year * 10)}
+                - Total Taxes Paid: ${formattedCurrency(totalTaxes1Year * 10)}
+            `;
+
+            document.getElementById('investmentResult').innerText = resultMessage;
+        }
+
+        function logout() {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

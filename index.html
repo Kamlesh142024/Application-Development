@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        input, select, button {
+            margin: 10px;
+            padding: 5px;
+        }
+        #converter, #logout {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="login">
+        <h2>Login</h2>
+        <label for="username">Username:</label>
+        <input type="text" id="username" placeholder="Enter username" />
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter password" />
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div id="converter">
+        <h2>Currency Converter</h2>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" placeholder="Enter amount" />
+
+        <label for="fromCurrency">From Currency:</label>
+        <select id="fromCurrency">
+            <option value="GBP">GBP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="BRL">BRL</option>
+            <option value="JPY">JPY</option>
+            <option value="TRY">TRY</option>
+        </select>
+
+        <label for="toCurrency">To Currency:</label>
+        <select id="toCurrency">
+            <option value="GBP">GBP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="BRL">BRL</option>
+            <option value="JPY">JPY</option>
+            <option value="TRY">TRY</option>
+        </select>
+
+        <button onclick="convertCurrency()">Convert</button>
+        <button onclick="gotoInvestment()">Go to Investment Planner</button>
+        <button onclick="logout()">Logout</button>
+
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        let isLoggedIn = false;
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Check for a basic hardcoded login (for educational purposes only)
+            if (username === 'kamlesh' && password === '1234') {
+                isLoggedIn = true;
+                document.getElementById('login').style.display = 'none';
+                document.getElementById('converter').style.display = 'block';
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+
+        function convertCurrency() {
+            if (!isLoggedIn) {
+                alert('Please login first');
+                return;
+            }
+
+            const amount = parseFloat(document.getElementById('amount').value);
+            const fromCurrency = document.getElementById('fromCurrency').value;
+            const toCurrency = document.getElementById('toCurrency').value;
+
+            // Check transaction limitations
+            if (amount < 300 || amount > 5000) {
+                alert('Transaction amount must be between $300 and $5000.');
+                return;
+            }
+
+            // Calculate fees based on transaction amount
+            let feePercentage;
+            if (amount <= 500) {
+                feePercentage = 3.5;
+            } else if (amount <= 1500) {
+                feePercentage = 2.7;
+            } else if (amount <= 2500) {
+                feePercentage = 2.0;
+            } else {
+                feePercentage = 1.5;
+            }
+
+            const fee = (amount * feePercentage) / 100;
+            const totalAmount = amount - fee;
+
+            // Display result with fee
+            document.getElementById('result').innerText = `${amount} ${fromCurrency} is equal to ${totalAmount.toFixed(2)} ${toCurrency} (including ${fee.toFixed(2)} ${fromCurrency} fee)`;
+        }
+
+        function gotoInvestment() {
+            window.location.href = "investment.html";
+        }
+
+        function logout() {
+            isLoggedIn = false;
+            document.getElementById('login').style.display = 'block';
+            document.getElementById('converter').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
